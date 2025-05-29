@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this import
 import image from "../assets/image 21.png";
 import {
   User,
@@ -25,6 +26,7 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +35,11 @@ const Register = () => {
 
   const handleSubmit = () => {
     console.log("Registration form submitted:", formData);
+  };
+
+  // Function to handle navigation to login page
+  const handleSignIn = () => {
+    navigate("/login"); // Navigate to the login route
   };
 
   return (
@@ -274,7 +281,10 @@ const Register = () => {
           {/* Login Link */}
           <p className="text-center text-gray-400 text-sm mt-4">
             Already have an account?{" "}
-            <button className="text-green-500 hover:text-green-400 font-medium">
+            <button 
+              onClick={handleSignIn} // Add onClick handler
+              className="text-green-500 hover:text-green-400 font-medium focus:outline-none"
+            >
               Sign In
             </button>
           </p>

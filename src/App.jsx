@@ -9,11 +9,13 @@ import DoctorDashboardd from './components/drDash';
 import BookingStepper from "./pages/BookingStepper";
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PatientDash from './components/patientDash';
 function App() {
   return (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/doctor-panel" element={<DoctorDashboardd />} />
+        <Route path="/patient-panel" element={<PatientDash />} />
         <Route path="book" element={<BookingStepper />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

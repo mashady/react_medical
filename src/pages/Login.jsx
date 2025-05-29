@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { User, Mail, Phone } from "lucide-react";
 import image from "../assets/image 21.png";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+
 const Login = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     emailAddress: "",
     phoneNumber: "",
   });
+
+  const navigate = useNavigate(); // Initialize navigate function
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,6 +20,10 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Appointment form submitted:", formData);
+  };
+
+  const handleRegister = () => {
+    navigate("/register"); // Navigate to register route
   };
 
   return (
@@ -117,6 +125,17 @@ const Login = () => {
             >
               Get Started
             </button>
+
+            {/* Register Button */}
+            <div className="flex items-center justify-center">
+              <button
+                type="button"
+                onClick={handleRegister}
+                className="text-green-500 hover:text-green-400 font-medium text-sm transition-colors duration-200 focus:outline-none"
+              >
+                Don't have an account? Register here
+              </button>
+            </div>
           </div>
 
           {/* Copyright */}
