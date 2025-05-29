@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import image from "src/assets/image 21.png";
 import {
   User,
   Mail,
@@ -288,36 +289,12 @@ const Register = () => {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100">
-          {/* Healthcare Registration Illustration */}
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="relative">
-              {/* Main registration illustration */}
-              <div className="w-80 h-96 bg-gradient-to-b from-green-200 to-green-300 rounded-2xl opacity-90 flex flex-col items-center justify-center">
-                <div className="text-8xl mb-4">📋</div>
-                <div className="text-2xl mb-2">🏥</div>
-                <div className="flex space-x-2">
-                  <div className="text-3xl">👨‍⚕️</div>
-                  <div className="text-3xl">👩‍⚕️</div>
-                </div>
-              </div>
-
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-green-200 rounded-full opacity-70 flex items-center justify-center">
-                <div className="text-2xl">✅</div>
-              </div>
-
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-green-200 rounded-full opacity-70 flex items-center justify-center">
-                <div className="text-3xl">🔒</div>
-              </div>
-
-              <div className="absolute top-1/4 -left-8 w-12 h-12 bg-green-200 rounded-full opacity-60 flex items-center justify-center">
-                <div className="text-xl">📱</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
+        <img
+          src={image}
+          alt="Healthcare Registration Illustration"
+          className="max-w-full max-h-[90vh] rounded-2xl shadow-lg object-contain"
+        />
       </div>
     </div>
   );

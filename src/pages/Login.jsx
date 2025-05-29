@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { User, Mail, Phone } from "lucide-react";
-
+import image from "src/assets/image 21.png";
 const Login = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -129,33 +129,12 @@ const Login = () => {
       </div>
 
       {/* Right Side - Image */}
-      <div className="flex-1 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
-          {/* Healthcare Professional Image Placeholder */}
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="relative">
-              {/* Main doctor figure */}
-              <div className="w-80 h-96 bg-gradient-to-b from-blue-200 to-blue-300 rounded-full opacity-90 flex items-end justify-center">
-                <div className="w-32 h-40 bg-white rounded-t-full mb-8 flex items-center justify-center">
-                  <div className="text-6xl">👩‍⚕️</div>
-                </div>
-              </div>
-
-              {/* Background figures */}
-              <div className="absolute -left-16 top-8 w-24 h-32 bg-blue-200 rounded-full opacity-60 flex items-end justify-center">
-                <div className="w-8 h-12 bg-white rounded-t-full mb-2 flex items-center justify-center">
-                  <div className="text-xl">👨‍⚕️</div>
-                </div>
-              </div>
-
-              <div className="absolute -right-12 top-16 w-20 h-28 bg-blue-200 rounded-full opacity-60 flex items-end justify-center">
-                <div className="w-6 h-10 bg-white rounded-t-full mb-2 flex items-center justify-center">
-                  <div className="text-lg">👨‍⚕️</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+        <img
+          src={image}
+          alt="Healthcare Professional"
+          className="max-w-full max-h-full object-contain"
+        />
       </div>
     </div>
   );
