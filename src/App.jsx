@@ -7,12 +7,16 @@ import RequireAuth from './auth/RequireAuth';
 import DashboardLayout from './layouts/DashboardLayout';
 import DoctorDashboardd from './components/drDash';
 import BookingStepper from "./pages/BookingStepper";
+import Login from './pages/Login';
+import Register from './pages/Register';
 function App() {
   return (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/doctor-panel" element={<DoctorDashboardd />} />
         <Route path="book" element={<BookingStepper />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Dashboard Routes with Layout */}
         <Route path="/dashboard" element={<DashboardLayout />}>

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { User, Mail, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     emailAddress: "",
@@ -18,12 +20,14 @@ const Login = () => {
     console.log("Appointment form submitted:", formData);
   };
 
+  const handleRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 flex">
-      {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Logo */}
           <div className="flex items-center mb-12">
             <div className="w-8 h-8 bg-green-500 rounded-lg mr-3 flex items-center justify-center">
               <div className="w-4 h-4 bg-white rounded-sm"></div>
@@ -31,7 +35,6 @@ const Login = () => {
             <span className="text-white text-xl font-semibold">CarePulse</span>
           </div>
 
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-white text-3xl font-light mb-2">
               Hi there, 👋
@@ -41,14 +44,9 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Form */}
           <div className="space-y-6">
-            {/* Full Name */}
             <div>
-              <label
-                htmlFor="fullName"
-                className="block text-gray-400 text-sm mb-2"
-              >
+              <label htmlFor="fullName" className="block text-gray-400 text-sm mb-2">
                 Full name
               </label>
               <div className="relative">
@@ -65,12 +63,8 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Email Address */}
             <div>
-              <label
-                htmlFor="emailAddress"
-                className="block text-gray-400 text-sm mb-2"
-              >
+              <label htmlFor="emailAddress" className="block text-gray-400 text-sm mb-2">
                 Email address
               </label>
               <div className="relative">
@@ -87,12 +81,8 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Phone Number */}
             <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-gray-400 text-sm mb-2"
-              >
+              <label htmlFor="phoneNumber" className="block text-gray-400 text-sm mb-2">
                 Phone number
               </label>
               <div className="relative">
@@ -109,7 +99,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="button"
               onClick={handleSubmit}
@@ -117,9 +106,16 @@ const Login = () => {
             >
               Get Started
             </button>
+
+            <button
+              type="button"
+              onClick={handleRegister}
+              className="w-full border border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+            >
+              Register
+            </button>
           </div>
 
-          {/* Copyright */}
           <div className="mt-12">
             <p className="text-gray-600 text-xs text-center">
               © itsmeankur copyright
@@ -128,20 +124,16 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Side - Image */}
       <div className="flex-1 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100">
-          {/* Healthcare Professional Image Placeholder */}
           <div className="w-full h-full flex items-center justify-center">
             <div className="relative">
-              {/* Main doctor figure */}
               <div className="w-80 h-96 bg-gradient-to-b from-blue-200 to-blue-300 rounded-full opacity-90 flex items-end justify-center">
                 <div className="w-32 h-40 bg-white rounded-t-full mb-8 flex items-center justify-center">
                   <div className="text-6xl">👩‍⚕️</div>
                 </div>
               </div>
 
-              {/* Background figures */}
               <div className="absolute -left-16 top-8 w-24 h-32 bg-blue-200 rounded-full opacity-60 flex items-end justify-center">
                 <div className="w-8 h-12 bg-white rounded-t-full mb-2 flex items-center justify-center">
                   <div className="text-xl">👨‍⚕️</div>
