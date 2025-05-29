@@ -5,11 +5,12 @@ import PatientDashboard from './pages/patient/PatientDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import RequireAuth from './auth/RequireAuth';
 import DashboardLayout from './layouts/DashboardLayout';
-
+import DoctorDashboardd from './components/drDash';
 function App() {
   return (
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/doctor-panel" element={<DoctorDashboardd />} />
 
         {/* Dashboard Routes with Layout */}
         <Route path="/dashboard" element={<DashboardLayout />}>
