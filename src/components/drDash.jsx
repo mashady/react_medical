@@ -72,7 +72,7 @@ const DoctorDashboard = () => {
   ]);
 
   const [doctorProfile, setDoctorProfile] = useState({
-    name: 'Dr. Michael Chen',
+    name: 'Dr. Muhammed Samir',
     specialty: 'Cardiology',
     email: 'dr.chen@hospital.com',
     phone: '+1234567890',
