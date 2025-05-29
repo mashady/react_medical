@@ -1,17 +1,26 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import PatientDashboard from './pages/patient/PatientDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import RequireAuth from './auth/RequireAuth';
+import DashboardLayout from './layouts/DashboardLayout';
 
 function App() {
   return (
-    <div className="">
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
+        <Route path="/" element={<Home />} />
+
+        {/* Dashboard Routes with Layout */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="doctor" element={<DoctorDashboard />} />
+          <Route path="patient" element={<PatientDashboard />} />
+          <Route path="admin" element={<AdminDashboard />} />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </div>
   );
 }
 
