@@ -9,6 +9,7 @@ import DoctorDashboardd from './components/drDash';
 import BookingStepper from "./pages/BookingStepper";
 import PatientDash from './components/patientDash';
 import DoctorsList from './pages/doctor/DoctorsList';
+import DoctorDetail from './pages/doctor/DoctorDetail';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
 
         {/* doctor list Routes */}
         <Route path="/doctors" element={<DoctorsList />} />
+
+        {/* doctors detail Routes */}
+        <Route path="/doctors/:id" element={<DoctorDetail />} />
 
         {/* Dashboard Routes with Layout */}
         <Route path="/dashboard" element={<DashboardLayout />}>

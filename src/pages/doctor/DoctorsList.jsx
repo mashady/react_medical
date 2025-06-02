@@ -13,7 +13,7 @@ const fakeDoctors = [
     specialty: { name: "Cardiology" },
     bio: "Experienced cardiologist with over 10 years in the field.",
     contact_number: "0123456789",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
+    image: "#",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const fakeDoctors = [
     specialty: { name: "Neurology" },
     bio: "Expert in neurological disorders and brain health.",
     contact_number: "0987654321",
-    image: "https://randomuser.me/api/portraits/men/44.jpg",
+    image: "#",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ const fakeDoctors = [
     specialty: { name: "Pediatrics" },
     bio: "Passionate about children’s health and well-being.",
     contact_number: "0112233445",
-    image: "https://randomuser.me/api/portraits/men/47.jpg",
+    image: "#",
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const fakeDoctors = [
     specialty: { name: "Orthopedics" },
     bio: "Specializing in bone and joint health.",
     contact_number: "0223344556",
-    image: "https://randomuser.me/api/portraits/men/47.jpg",
+    image: "#",
   },
   {
     id: 5,
@@ -45,7 +45,7 @@ const fakeDoctors = [
     specialty: { name: "Dermatology" },
     bio: "Skincare expert with a focus on dermatological treatments.",
     contact_number: "0334455667",
-    image: "https://randomuser.me/api/portraits/men/47.jpg",
+    image: "#",
   },
 ];
 
