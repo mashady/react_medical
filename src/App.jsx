@@ -8,6 +8,8 @@ import DashboardLayout from './layouts/DashboardLayout';
 import DoctorDashboardd from './components/drDash';
 import BookingStepper from "./pages/BookingStepper";
 import PatientDash from './components/patientDash';
+import DoctorsList from './pages/doctor/DoctorsList';
+
 function App() {
   return (
       <Routes>
@@ -15,6 +17,9 @@ function App() {
         <Route path="/doctor-panel" element={<DoctorDashboardd />} />
         <Route path="/patient-panel" element={<PatientDash />} />
         <Route path="book" element={<BookingStepper />} />
+
+        {/* doctor list Routes */}
+        <Route path="/doctors" element={<DoctorsList />} />
 
         {/* Dashboard Routes with Layout */}
         <Route path="/dashboard" element={<DashboardLayout />}>
