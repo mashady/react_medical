@@ -3,6 +3,8 @@ import MedicalFooter from "../components/footer.jsx";
 import hero1 from "../assets/hero1.jpg";
 import hero2 from "../assets/hero2.jpg";
 import logo from "../assets/logo.svg";
+import doctor from "../assets/doctor.jpg";
+import { Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import {
@@ -39,29 +41,72 @@ export default function MedicalClinicWebsite() {
   const progressiveRef = useRef(null);
   const doctorsRef = useRef(null);
   const infrastructureRef = useRef(null);
-  const doctors = [
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+  const doctorsData = [
     {
+      id: 1,
       name: "Dr. Elizabeth Porter",
-      title: "Chief Medical Officer",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      position: "Chief Medical Officer",
+      specialty: "Internal Medicine",
+      experience: "15+ years",
+      rating: 4.9,
+      patients: "2,500+",
+      image: { doctor },
+      achievements: ["Board Certified", "Research Excellence Award"],
+      description:
+        "Specializing in comprehensive internal medicine with focus on preventive care.",
     },
     {
+      id: 2,
       name: "Dr. David Lee",
-      title: "Cardiologist",
-      image: "https://randomuser.me/api/portraits/men/65.jpg",
+      position: "Cardiologist",
+      specialty: "Cardiovascular Surgery",
+      experience: "12+ years",
+      rating: 4.8,
+      patients: "1,800+",
+      image: { doctor },
+      achievements: ["Heart Surgery Specialist", "Published Researcher"],
+      description:
+        "Expert in advanced cardiac procedures and heart disease prevention.",
     },
     {
+      id: 3,
       name: "Dr. Ann Wilson",
-      title: "Neurologist",
-      image: "https://randomuser.me/api/portraits/women/68.jpg",
+      position: "Neurologist",
+      specialty: "Neurology & Brain Surgery",
+      experience: "18+ years",
+      rating: 4.9,
+      patients: "2,200+",
+      image: { doctor },
+      achievements: ["Neurosurgery Excellence", "Medical Innovation Award"],
+      description:
+        "Leading specialist in neurological disorders and brain health.",
     },
     {
+      id: 4,
       name: "Dr. Daniel Roberts",
-      title: "Pediatrician",
-      image: "https://randomuser.me/api/portraits/men/35.jpg",
+      position: "Pediatrician",
+      specialty: "Child Healthcare",
+      experience: "10+ years",
+      rating: 4.7,
+      patients: "3,000+",
+      image: { doctor },
+      achievements: ["Pediatric Care Expert", "Child Wellness Advocate"],
+      description:
+        "Dedicated to providing comprehensive healthcare for children of all ages.",
     },
   ];
 
+  const getGradientClasses = (color) => {
+    const gradients = {
+      blue: "from-blue-400 via-blue-500 to-blue-600",
+      green: "from-emerald-400 via-emerald-500 to-emerald-600",
+      purple: "from-purple-400 via-purple-500 to-purple-600",
+      teal: "from-teal-400 via-teal-500 to-teal-600",
+    };
+    return gradients[color] || gradients.blue;
+  };
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
@@ -317,6 +362,14 @@ export default function MedicalClinicWebsite() {
   const handleHoverEnter = () => setIsHovering(true);
   const handleHoverLeave = () => setIsHovering(false);
 
+  const handleMouseEnter = (doctorId) => {
+    setHoveredCard(doctorId);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredCard(null);
+  };
+
   return (
     <div className="min-h-screen bg-white relative cursor-none">
       <div
@@ -378,7 +431,7 @@ export default function MedicalClinicWebsite() {
             </a>
             <a
               href="#"
-              className="hover:text-[#F7A582]transition-colors"
+              className="hover:text-[#F7A582] transition-colors"
               onMouseEnter={handleHoverEnter}
               onMouseLeave={handleHoverLeave}
             >
@@ -421,7 +474,7 @@ export default function MedicalClinicWebsite() {
               </p>
               <div className="flex items-center space-x-6 pt-4">
                 <button
-                  className="bg-[#F7A582] hover:bg-orange-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 flex items-center space-x-2"
+                  className="bg-[#F7A582] hover:bg-[#F7A582] text-white px-8 py-4 rounded-full font-medium transition-all duration-300 flex items-center space-x-2"
                   onMouseEnter={handleHoverEnter}
                   onMouseLeave={handleHoverLeave}
                 >
@@ -516,7 +569,7 @@ export default function MedicalClinicWebsite() {
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-[#f7a582] px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#f7a582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -545,7 +598,7 @@ export default function MedicalClinicWebsite() {
                   <span className="text-sm">Neurological Pathology</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582]rounded-full"></div>
                   <span className="text-sm">Brain Imaging Services</span>
                 </li>
                 <li className="flex items-center space-x-3">
@@ -554,7 +607,7 @@ export default function MedicalClinicWebsite() {
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-[#f7a582] px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#f7a582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -586,12 +639,12 @@ export default function MedicalClinicWebsite() {
                   <span className="text-sm">Molecular Diagnostics</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582]rounded-full"></div>
                   <span className="text-sm">Pathology Services</span>
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#F7A582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -606,7 +659,7 @@ export default function MedicalClinicWebsite() {
               onMouseEnter={handleHoverEnter}
               onMouseLeave={handleHoverLeave}
             >
-              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-[#F7A582] rounded-full flex items-center justify-center mb-6">
                 <Baby className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Pediatric Clinic</h3>
@@ -616,20 +669,20 @@ export default function MedicalClinicWebsite() {
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582]rounded-full"></div>
                   <span className="text-sm">Childhood Development</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Vaccination Programs</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Pediatric Emergencies</span>
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#F7A582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -644,7 +697,7 @@ export default function MedicalClinicWebsite() {
               onMouseEnter={handleHoverEnter}
               onMouseLeave={handleHoverLeave}
             >
-              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-[#F7A582] rounded-full flex items-center justify-center mb-6">
                 <Eye className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Ophthalmology Clinic</h3>
@@ -654,20 +707,20 @@ export default function MedicalClinicWebsite() {
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Vision Testing & Correction</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Cataract Surgery</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Retinal Treatments</span>
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#F7A582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -682,7 +735,7 @@ export default function MedicalClinicWebsite() {
               onMouseEnter={handleHoverEnter}
               onMouseLeave={handleHoverLeave}
             >
-              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-[#F7A582] rounded-full flex items-center justify-center mb-6">
                 <Activity className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Emergency Clinic</h3>
@@ -692,20 +745,20 @@ export default function MedicalClinicWebsite() {
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Trauma Care</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Emergency Surgery</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7A582] rounded-full"></div>
                   <span className="text-sm">Critical Care Management</span>
                 </li>
               </ul>
               <button
-                className="bg-orange-500 hover:bg-orange-600 px-6 py-3 rounded-full font-medium transition-colors"
+                className="bg-[#F7A582] hover:bg-[#F7A582] px-6 py-3 rounded-full font-medium transition-colors"
                 onMouseEnter={handleHoverEnter}
                 onMouseLeave={handleHoverLeave}
               >
@@ -721,7 +774,7 @@ export default function MedicalClinicWebsite() {
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="text-orange-500 font-medium text-lg">
+                <span className="text-[#F7A582] font-medium text-lg">
                   About MedPro
                 </span>
                 <h3 className="text-4xl font-bold text-teal-800 mb-6 leading-tight">
@@ -774,42 +827,163 @@ export default function MedicalClinicWebsite() {
       </section>
 
       {/* Doctors Section */}
-      <section ref={doctorsRef} className="py-20 px-6 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-teal-800 mb-4">
-              Meet Our Doctors.
+      <section className="py-24 px-6 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-5">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <Users size={16} />
+              Our Expert Team
+            </div>
+            <h2 className="text-5xl font-bold text-slate-800 mb-6 leading-tight">
+              Meet Our{" "}
+              <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
+                Distinguished
+              </span>{" "}
+              Doctors
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              Compassionate, skilled, and experienced professionals.
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Our team of experienced medical professionals is dedicated to
+              providing exceptional healthcare with compassion and expertise.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {doctors.map((doctor, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                className="text-center group bg-white shadow-lg rounded-3xl p-6 transition duration-300"
+            {doctorsData.map((doctor) => (
+              <div
+                key={doctor.id}
+                className={`group cursor-pointer transition-all duration-500 ${
+                  hoveredCard === doctor.id ? "transform -translate-y-4" : ""
+                }`}
+                onMouseEnter={() => handleMouseEnter(doctor.id)}
+                onMouseLeave={handleMouseLeave}
               >
-                <div className="w-48 h-64 rounded-3xl mb-6 mx-auto overflow-hidden relative">
-                  <img
-                    src={doctor.image}
-                    alt={doctor.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200/50">
+                  {/* Doctor Image Card */}
+                  <div className="relative p-6 pb-4">
+                    <div
+                      className={`w-full h-80 bg-gradient-to-br ${getGradientClasses(
+                        doctor.image
+                      )} rounded-2xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500`}
+                    >
+                      {/* Animated background pattern */}
+                      <div className="absolute inset-0 opacity-20">
+                        <div className="absolute top-4 left-4 w-8 h-8 bg-white rounded-full animate-pulse"></div>
+                        <div className="absolute top-8 right-6 w-4 h-4 bg-white rounded-full animate-pulse delay-200"></div>
+                        <div className="absolute bottom-8 left-8 w-6 h-6 bg-white rounded-full animate-pulse delay-500"></div>
+                      </div>
+
+                      {/* Doctor image */}
+                      <img
+                        src="/doctor.jpg"
+                        alt={`${doctor.name} - ${doctor.position}`}
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-40 h-48 object-cover object-top rounded-t-full border-4 border-white/30"
+                      />
+
+                      {/* Floating info badge */}
+                      <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                        <div className="flex items-center gap-1 text-sm">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <span className="font-semibold text-slate-800">
+                            {doctor.rating}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Experience badge */}
+                      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                        <div className="flex items-center gap-1 text-sm">
+                          <Calendar className="w-4 h-4 text-slate-600" />
+                          <span className="font-medium text-slate-800">
+                            {doctor.experience}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Doctor Info */}
+                  <div className="px-6 pb-6">
+                    <div className="text-center mb-4">
+                      <h4 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors">
+                        {doctor.name}
+                      </h4>
+                      <p className="text-teal-600 font-semibold mb-1">
+                        {doctor.position}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {doctor.specialty}
+                      </p>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex justify-center items-center gap-4 mb-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-600">
+                          {doctor.patients}
+                        </span>
+                      </div>
+                      <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                      <div className="flex items-center gap-1">
+                        <Award className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-600">
+                          {doctor.achievements.length} Awards
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Description - shows on hover */}
+                    <div
+                      className={`transition-all duration-300 overflow-hidden ${
+                        hoveredCard === doctor.id
+                          ? "max-h-20 opacity-100"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <p className="text-sm text-slate-600 text-center leading-relaxed">
+                        {doctor.description}
+                      </p>
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="mt-4 text-center">
+                      <button className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded-full font-medium hover:from-teal-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        View Profile
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-xl font-bold text-teal-800 mb-2">
-                  {doctor.name}
-                </h4>
-                <p className="text-gray-600 mb-4">{doctor.title}</p>
-                <div className="flex justify-center gap-4 text-teal-600 text-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <FaLinkedin className="cursor-pointer hover:text-teal-800" />
-                  <FaTwitter className="cursor-pointer hover:text-teal-800" />
-                </div>
-              </motion.div>
+              </div>
             ))}
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <p className="text-slate-600 mb-6">
+              Need to schedule an appointment?
+            </p>
+            <button className="bg-white text-teal-600 border-2 border-teal-600 px-8 py-3 rounded-full font-semibold hover:bg-teal-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl">
+              Book Consultation
+            </button>
           </div>
         </div>
       </section>
