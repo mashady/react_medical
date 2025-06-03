@@ -61,9 +61,9 @@ const Login = () => {
       localStorage.setItem('userData', JSON.stringify(response.data.user));
       
       if (response.data.user.role === 'doctor') {
-        navigate('/doctor-panel');
+        navigate('/doctor-dashboard');
       } else if (response.data.user.role === 'patient') {
-        navigate('/patient-panel');
+        navigate('/patient-dashboard');
       } else if (response.data.user.role === 'admin') {
         navigate('/admin-dashboard');
       }
