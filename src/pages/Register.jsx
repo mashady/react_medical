@@ -81,9 +81,9 @@ const Register = () => {
       localStorage.setItem('userData', JSON.stringify(response.data));
       
       if (response.data.role === 'doctor') {
-        navigate('/doctor-panel');
+        navigate('/doctor-dashboard');
       } else if (response.data.role === 'patient') {
-        navigate('/patient-panel');
+        navigate('/patient-dashboard');
       } else if (response.data.role === 'admin') {
         navigate('/admin-dashboard');
       }
