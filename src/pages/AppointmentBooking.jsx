@@ -32,7 +32,7 @@ export default function AppointmentBooking() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTc4MzcwLCJpYXQiOjE3NDg5NzgwNzAsImp0aSI6IjJjZjllMDg3MTFlODQ4ZjhhYmU1N2YzYTdkOTRhZTE2IiwidXNlcl9pZCI6MTV9._R4YHlGzvgx6ovgirrJBZfZWfDAaLsE54PVK0Zs-bKo';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTgwNDk1LCJpYXQiOjE3NDg5ODAxOTUsImp0aSI6ImE4ZmY0ZjEzNjk2YzQ0YjRhMWY0NTBiYjgwY2I4YjkwIiwidXNlcl9pZCI6MTV9.EzUHp0zjxA3by8DKY3w12LoY6WJ3_i7rs5xAt9LOJzc';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,9 +56,9 @@ export default function AppointmentBooking() {
             position: "top-right"
       });
       setTimeout(() => {
-            setStep(1); // Reset to first step on error
-            navigate('/book');
-      }, 3000); // Wait 1 second before navigating
+            setStep(1);
+            navigate('/');
+      }, 3000); // Wait 3 seconds before navigating
     }).catch((err) => {
         console.error('Error booking appointment:', err);
 
