@@ -148,7 +148,7 @@ export default function DoctorProfile() {
       });
 
       // Description section
-      gsap.from(descriptionRef.current.children, {
+      gsap.from(descriptionRef.current?.querySelectorAll("*"), {
         y: 60,
         opacity: 0,
         duration: 0.8,
@@ -296,7 +296,7 @@ export default function DoctorProfile() {
         }}
       />
 
-      <header className="bg-[#07332f] text-white py-4 px-6 relative z-10">
+      <header className="bg-[#07332f] text-white py-4 px-6 relative z-10 ">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="">
@@ -357,7 +357,7 @@ export default function DoctorProfile() {
 
       <section
         ref={heroRef}
-        className="bg-[#07332f] from-teal-800 to-teal-900 text-white py-20 px-6 relative overflow-hidden"
+        className="bg-[#07332f] from-teal-800 to-teal-900 text-white py-20 px-6 relative overflow-hidden "
       >
         <h1 className="text-[#F7A582] text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-center relative z-10">
           {doctorsData["david-lee"].name}
@@ -372,43 +372,38 @@ export default function DoctorProfile() {
       {/* Doctor Info */}
       <div
         ref={doctorInfoRef}
-        className="max-w-6xl mx-auto px-4 mt-12 grid md:grid-cols-2 gap-8 items-center"
+        className="max-w-6xl mx-auto mt-12 flex flex-col md:flex-row rounded-lg overflow-hidden shadow-lg"
       >
-        <div className="relative">
+        {/* Image */}
+        <div className="w-full md:w-1/2">
           <img
             src={doctor.image}
             alt={doctor.name}
-            className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+            className="w-full h-full object-cover"
           />
         </div>
-        <div className="bg-[#00292e] text-white p-8 rounded-lg shadow-lg">
-          <h3 className="text-sm text-[#ffb492] uppercase font-semibold tracking-wider">
+
+        {/* Text Content */}
+        <div className="w-full md:w-1/2 bg-[#003b36] text-white p-10 flex flex-col justify-center">
+          <h3 className="text-sm uppercase tracking-widest text-[#ffb492] font-semibold">
             {doctor.specialty}
           </h3>
-          <h2 className="text-3xl font-bold mt-2 mb-6">{doctor.name}</h2>
-          <p className="leading-relaxed text-gray-200">{doctor.description}</p>
-          <div className="flex gap-4 mt-6">
-            <div
-              className="w-10 h-10 bg-[#ffb492] rounded-full flex items-center justify-center cursor-none hover:bg-opacity-80 transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              <i className="fab fa-facebook-f text-[#00292e]"></i>
-            </div>
-            <div
-              className="w-10 h-10 bg-[#ffb492] rounded-full flex items-center justify-center cursor-none hover:bg-opacity-80 transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              <i className="fab fa-twitter text-[#00292e]"></i>
-            </div>
-            <div
-              className="w-10 h-10 bg-[#ffb492] rounded-full flex items-center justify-center cursor-none hover:bg-opacity-80 transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              <i className="fab fa-linkedin-in text-[#00292e]"></i>
-            </div>
+          <h2 className="text-3xl font-bold text-[#ffb492] mt-2 mb-4">
+            {doctor.name}
+          </h2>
+          <p className="text-gray-200 leading-relaxed">{doctor.description}</p>
+
+          {/* Social Icons */}
+          <div className="flex gap-4 mt-6 text-[#ffb492] text-xl">
+            <a href="#" className="hover:text-orange-400">
+              <i className="fab fa-twitter"></i>
+            </a>
+            <a href="#" className="hover:text-orange-400">
+              <i className="fab fa-youtube"></i>
+            </a>
+            <a href="#" className="hover:text-orange-400">
+              <i className="fab fa-facebook-f"></i>
+            </a>
           </div>
         </div>
       </div>
