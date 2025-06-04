@@ -32,7 +32,7 @@ const DoctorCard = ({ doctor }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const renderStars = (rating) => {
-    // Default rating if not provided
+    
     rating = rating || 4.5;
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -62,7 +62,7 @@ const DoctorCard = ({ doctor }) => {
     return stars;
   };
 
-  // Default image if not provided
+ 
   const doctorImage =
     doctor.image ||
     "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg";
@@ -183,10 +183,10 @@ const DoctorsList = () => {
         }
         const data = await response.json();
 
-        // Transform the API data to match our expected structure
+       
         const transformedDoctors = data.map((doctor) => ({
           ...doctor,
-          // Add default values for missing fields
+          
           rating: doctor.rating || 4.5,
           experience: doctor.experience || 5,
           image:
@@ -237,7 +237,7 @@ const DoctorsList = () => {
     });
 
     setFilteredDoctors(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1); 
   }, [searchQuery, doctors, selectedSpecialty, experienceFilter, ratingFilter]);
 
   // Custom cursor functionality

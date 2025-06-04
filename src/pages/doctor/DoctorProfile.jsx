@@ -19,7 +19,7 @@ const MedicalFooter = () => (
 const logo = "https://via.placeholder.com/120x40/07332f/ffffff?text=LOGO";
 
 export default function DoctorProfile() {
-  // Get the ID from URL parameters
+
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ export default function DoctorProfile() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
-  // Refs for GSAP animations
+
   const containerRef = useRef();
   const heroRef = useRef();
   const doctorInfoRef = useRef();
@@ -37,7 +37,7 @@ export default function DoctorProfile() {
   const awardsRef = useRef();
   const skillsRef = useRef();
 
-  // Fetch doctor data
+ 
   useEffect(() => {
     const fetchDoctorData = async () => {
       try {
@@ -46,7 +46,7 @@ export default function DoctorProfile() {
           `http://127.0.0.1:8000/api/doctor/profile/${id}`
         );
 
-        // Transform the API data to match our component's expected structure
+  
         const doctorData = {
           name: `Dr. ${response.data.user.first_name} ${response.data.user.last_name}`,
           specialty: response.data.specialty.name,

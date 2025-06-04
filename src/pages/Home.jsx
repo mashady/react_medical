@@ -54,8 +54,6 @@ export default function MedicalClinicWebsite() {
           throw new Error("Failed to fetch doctors");
         }
         const data = await response.json();
-
-        // Transform API data to match your card structure
         const transformedData = data.map((doctor) => ({
           id: doctor.id,
           name:
@@ -67,10 +65,10 @@ export default function MedicalClinicWebsite() {
           specialty: doctor.specialty
             ? doctor.specialty.description
             : "General Medicine",
-          experience: "10+ years", // You might want to add this to your API
-          rating: 4.8, // Default rating or fetch from API
-          patients: "1,500+", // Default or fetch from API
-          image: doctor, // You can use the doctor object or keep your static image
+          experience: "10+ years",
+          rating: 4.8, 
+          patients: "1,500+", 
+          image: doctor, 
           achievements: doctor.specialty
             ? [doctor.specialty.name]
             : ["General Practice"],
