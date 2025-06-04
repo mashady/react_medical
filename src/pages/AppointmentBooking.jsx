@@ -32,7 +32,7 @@ export default function AppointmentBooking() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTgwNDk1LCJpYXQiOjE3NDg5ODAxOTUsImp0aSI6ImE4ZmY0ZjEzNjk2YzQ0YjRhMWY0NTBiYjgwY2I4YjkwIiwidXNlcl9pZCI6MTV9.EzUHp0zjxA3by8DKY3w12LoY6WJ3_i7rs5xAt9LOJzc';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5MDgwMzk5LCJpYXQiOjE3NDkwNDQzOTksImp0aSI6IjQ4ZWNkZTIxYmVhNDQ4ODNhZDI4NDRiMWI3ZDUzYzJmIiwidXNlcl9pZCI6MTV9.IW60UO_zFQ9ySPN_HPXKt22f1rXqWfx60Dm2iK4hvS0';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,24 +50,18 @@ export default function AppointmentBooking() {
         }
     }).then((res) => {
       console.log('Appointment booked successfully:', res.data);
-      toast("Appointment booked successfully!", {
-            type: 'success',
-            autoClose: 3000,
-            position: "top-right"
+      toast.success("Appointment booked successfully!", {
+          autoClose: 3000,
+          position: "top-right"
       });
-      setTimeout(() => {
-            setStep(1);
-            navigate('/');
-      }, 3000); // Wait 3 seconds before navigating
+      setStep(1); // Reset to first step on error
+      navigate('/book');
     }).catch((err) => {
         console.error('Error booking appointment:', err);
+        // Extract error message from the response
+        const message = extractErrorMessage(err, "Failed to book appointment");
 
-        const detail =
-            err.response?.data?.detail ||
-            err.response?.data?.non_field_errors?.[0] ||
-            "Failed to book appointment";
-
-        toast(detail, {
+        toast(message, {
             type: 'error',
             autoClose: 5000,
             position: "top-right"
@@ -75,6 +69,57 @@ export default function AppointmentBooking() {
         setStep(1); // Reset to first step on error
         navigate('/book');
     });
+
+    // Function to extract error message from the response
+    function extractErrorMessage(err, fallback = "Something went wrong") {
+      if (!err.response || !err.response.data) return fallback;
+
+      const errorData = err.response.data;
+
+      // If error data is a simple string message
+      if (typeof errorData === "string") {
+        return errorData;
+      }
+
+      // If error data is an array, return the first element
+      if (Array.isArray(errorData)) {
+        return errorData[0] || fallback;
+      }
+
+      // If error data is an object (most common in DRF validation errors)
+      if (typeof errorData === "object") {
+        // Check for standard detail message (e.g. from DRF)
+        if (errorData.detail) {
+          return errorData.detail;
+        }
+
+        // Check for non_field_errors (list)
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+          const first = errorData.non_field_errors[0];
+          
+          
+          if (first.includes("doctor, date, start_time must make a unique set")) {
+            return "An appointment with this doctor at this time already exists.";
+          }
+
+          return first;
+        }
+
+        // Flatten all error messages from fields into a single string
+        const fieldErrors = Object.values(errorData)
+          .flat()
+          .filter(Boolean)
+          .join(" ");
+
+        if (fieldErrors) {
+          return fieldErrors;
+        }
+      }
+
+      // Fallback message if nothing matched
+      return fallback;
+    }
+
     // After successful submission, navigate to appointments page
     // You can also reset formData if needed
     setFormData({
@@ -91,7 +136,6 @@ export default function AppointmentBooking() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-        <ToastContainer />
       {/* Enhanced Header */}
       <div className="bg-[#07332F] text-white" style={{ minHeight: '30vh' }}>
         <div className="max-w-6xl mx-auto p-8 flex flex-col justify-end h-full">

@@ -16,7 +16,7 @@ export default function ServiceSelection({ formData, setFormData, nextStep }) {
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ4OTgwNDk1LCJpYXQiOjE3NDg5ODAxOTUsImp0aSI6ImE4ZmY0ZjEzNjk2YzQ0YjRhMWY0NTBiYjgwY2I4YjkwIiwidXNlcl9pZCI6MTV9.EzUHp0zjxA3by8DKY3w12LoY6WJ3_i7rs5xAt9LOJzc';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5MDgwMzk5LCJpYXQiOjE3NDkwNDQzOTksImp0aSI6IjQ4ZWNkZTIxYmVhNDQ4ODNhZDI4NDRiMWI3ZDUzYzJmIiwidXNlcl9pZCI6MTV9.IW60UO_zFQ9ySPN_HPXKt22f1rXqWfx60Dm2iK4hvS0';
   // This is running onComponentLoad =>
   useEffect(() => {
     axios.get(`/api/specialties/`,{
@@ -32,7 +32,7 @@ export default function ServiceSelection({ formData, setFormData, nextStep }) {
       console.log(err)
     });
 
-    axios.get(`/api/doctor-profiles/by-specialty/`,{
+    axios.get(`/api/doctors/by-specialty/`,{
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function ServiceSelection({ formData, setFormData, nextStep }) {
 
   // This is running onSpecialityChange =>
   function fetchRelatedDoctors(specialtyName) {
-    axios.get(`/api/doctor-profiles/by-specialty/?specialty=${encodeURIComponent(specialtyName)}`, {
+    axios.get(`/api/doctors/by-specialty/?specialty=${encodeURIComponent(specialtyName)}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
