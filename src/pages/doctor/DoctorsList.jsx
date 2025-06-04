@@ -19,15 +19,6 @@ import MedicalFooter from "../../components/footer.jsx";
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
-// Mock components and assets
-const MedicalFooter = () => (
-  <footer className="bg-[#07332f] text-white py-8 px-6 mt-16">
-    <div className="max-w-6xl mx-auto text-center">
-      <p>&copy; 2024 Urban Clinic. All rights reserved.</p>
-    </div>
-  </footer>
-);
-
 const logo = "https://via.placeholder.com/120x40/07332f/ffffff?text=LOGO";
 
 const DoctorCard = ({ doctor }) => {
