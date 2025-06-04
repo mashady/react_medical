@@ -35,6 +35,10 @@ import {
 export default function MedicalClinicWebsite() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [doctorsData, setDoctorsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const heroRef = useRef(null);
   const servicesRef = useRef(null);
   const cardsRef = useRef([]);
@@ -42,61 +46,50 @@ export default function MedicalClinicWebsite() {
   const doctorsRef = useRef(null);
   const infrastructureRef = useRef(null);
   const [hoveredCard, setHoveredCard] = useState(null);
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/doctors/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctors");
+        }
+        const data = await response.json();
 
-  const doctorsData = [
-    {
-      id: 1,
-      name: "Dr. Elizabeth Porter",
-      position: "Chief Medical Officer",
-      specialty: "Internal Medicine",
-      experience: "15+ years",
-      rating: 4.9,
-      patients: "2,500+",
-      image: { doctor },
-      achievements: ["Board Certified", "Research Excellence Award"],
-      description:
-        "Specializing in comprehensive internal medicine with focus on preventive care.",
-    },
-    {
-      id: 2,
-      name: "Dr. David Lee",
-      position: "Cardiologist",
-      specialty: "Cardiovascular Surgery",
-      experience: "12+ years",
-      rating: 4.8,
-      patients: "1,800+",
-      image: { doctor },
-      achievements: ["Heart Surgery Specialist", "Published Researcher"],
-      description:
-        "Expert in advanced cardiac procedures and heart disease prevention.",
-    },
-    {
-      id: 3,
-      name: "Dr. Ann Wilson",
-      position: "Neurologist",
-      specialty: "Neurology & Brain Surgery",
-      experience: "18+ years",
-      rating: 4.9,
-      patients: "2,200+",
-      image: { doctor },
-      achievements: ["Neurosurgery Excellence", "Medical Innovation Award"],
-      description:
-        "Leading specialist in neurological disorders and brain health.",
-    },
-    {
-      id: 4,
-      name: "Dr. Daniel Roberts",
-      position: "Pediatrician",
-      specialty: "Child Healthcare",
-      experience: "10+ years",
-      rating: 4.7,
-      patients: "3,000+",
-      image: { doctor },
-      achievements: ["Pediatric Care Expert", "Child Wellness Advocate"],
-      description:
-        "Dedicated to providing comprehensive healthcare for children of all ages.",
-    },
-  ];
+        // Transform API data to match your card structure
+        const transformedData = data.map((doctor) => ({
+          id: doctor.id,
+          name:
+            `${doctor.user.first_name} ${doctor.user.last_name}` ||
+            doctor.user.username,
+          position: doctor.specialty
+            ? doctor.specialty.name
+            : "General Practitioner",
+          specialty: doctor.specialty
+            ? doctor.specialty.description
+            : "General Medicine",
+          experience: "10+ years", // You might want to add this to your API
+          rating: 4.8, // Default rating or fetch from API
+          patients: "1,500+", // Default or fetch from API
+          image: doctor, // You can use the doctor object or keep your static image
+          achievements: doctor.specialty
+            ? [doctor.specialty.name]
+            : ["General Practice"],
+          description:
+            doctor.bio ||
+            "Experienced medical professional dedicated to patient care.",
+          contact: doctor.contact_number,
+        }));
+
+        setDoctorsData(transformedData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   const getGradientClasses = (color) => {
     const gradients = {
@@ -853,128 +846,134 @@ export default function MedicalClinicWebsite() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {doctorsData.map((doctor) => (
-              <div
-                key={doctor.id}
-                className={`group cursor-pointer transition-all duration-500 ${
-                  hoveredCard === doctor.id ? "transform -translate-y-4" : ""
-                }`}
-                onMouseEnter={() => handleMouseEnter(doctor.id)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200/50">
-                  {/* Doctor Image Card */}
-                  <div className="relative p-6 pb-4">
-                    <div
-                      className={`w-full h-80 bg-gradient-to-br ${getGradientClasses(
-                        doctor.image
-                      )} rounded-2xl relative overflow-hidden group-hover:scale-105 transition-transform duration-500`}
-                    >
-                      {/* Animated background pattern */}
-                      <div className="absolute inset-0 opacity-20">
-                        <div className="absolute top-4 left-4 w-8 h-8 bg-white rounded-full animate-pulse"></div>
-                        <div className="absolute top-8 right-6 w-4 h-4 bg-white rounded-full animate-pulse delay-200"></div>
-                        <div className="absolute bottom-8 left-8 w-6 h-6 bg-white rounded-full animate-pulse delay-500"></div>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-10 text-red-500">
+              Error loading doctors: {error}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {doctorsData.map((doctor) => (
+                <div
+                  key={doctor.id}
+                  className={`group cursor-pointer transition-all duration-500 ${
+                    hoveredCard === doctor.id ? "transform -translate-y-4" : ""
+                  }`}
+                  onMouseEnter={() => handleMouseEnter(doctor.id)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200/50">
+                    {/* Doctor Image Card */}
+                    <div className="relative p-6 pb-4">
+                      <div className={`w-full h-80 `}>
+                        <img
+                          src={doctor.image?.photo || "/doctor.jpg"}
+                          alt={`${doctor.name} - ${doctor.position}`}
+                          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-40 h-48 object-cover object-top rounded-t-full border-4 border-white/30"
+                        />
+
+                        {/* Floating info badge */}
+                        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                          <div className="flex items-center gap-1 text-sm">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="font-semibold text-slate-800">
+                              {doctor.rating}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Experience badge */}
+                        <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                          <div className="flex items-center gap-1 text-sm">
+                            <Calendar className="w-4 h-4 text-slate-600" />
+                            <span className="font-medium text-slate-800">
+                              {doctor.experience}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Doctor Info */}
+                    <div className="px-6 pb-6">
+                      <div className="text-center mb-4">
+                        <h4 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors">
+                          {doctor.name}
+                        </h4>
+                        <p className="text-teal-600 font-semibold mb-1">
+                          {doctor.position}
+                        </p>
+                        <p className="text-sm text-slate-500">
+                          {doctor.specialty}
+                        </p>
                       </div>
 
-                      {/* Doctor image */}
-                      <img
-                        src="/doctor.jpg"
-                        alt={`${doctor.name} - ${doctor.position}`}
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-40 h-48 object-cover object-top rounded-t-full border-4 border-white/30"
-                      />
-
-                      {/* Floating info badge */}
-                      <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
-                        <div className="flex items-center gap-1 text-sm">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="font-semibold text-slate-800">
-                            {doctor.rating}
+                      {/* Stats */}
+                      <div className="flex justify-center items-center gap-4 mb-4 text-sm">
+                        <div className="flex items-center gap-1">
+                          <Users className="w-4 h-4 text-slate-400" />
+                          <span className="text-slate-600">
+                            {doctor.patients}
+                          </span>
+                        </div>
+                        <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                        <div className="flex items-center gap-1">
+                          <Award className="w-4 h-4 text-slate-400" />
+                          <span className="text-slate-600">
+                            {doctor.achievements.length} Awards
                           </span>
                         </div>
                       </div>
 
-                      {/* Experience badge */}
-                      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
-                        <div className="flex items-center gap-1 text-sm">
-                          <Calendar className="w-4 h-4 text-slate-600" />
-                          <span className="font-medium text-slate-800">
-                            {doctor.experience}
-                          </span>
+                      {/* Description - shows on hover */}
+                      <div
+                        className={`transition-all duration-300 overflow-hidden ${
+                          hoveredCard === doctor.id
+                            ? "max-h-20 opacity-100"
+                            : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <p className="text-sm text-slate-600 text-center leading-relaxed">
+                          {doctor.description}
+                        </p>
+                      </div>
+
+                      {/* Contact Info */}
+                      {doctor.contact && (
+                        <div className="mt-2 text-center text-sm text-slate-500">
+                          <Phone className="inline-block w-4 h-4 mr-1" />
+                          {doctor.contact}
                         </div>
+                      )}
+
+                      {/* Action Button */}
+                      <div className="mt-4 text-center">
+                        <button className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded-full font-medium hover:from-teal-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                          View Profile
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </button>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Doctor Info */}
-                  <div className="px-6 pb-6">
-                    <div className="text-center mb-4">
-                      <h4 className="text-xl font-bold text-slate-800 mb-1 group-hover:text-teal-600 transition-colors">
-                        {doctor.name}
-                      </h4>
-                      <p className="text-teal-600 font-semibold mb-1">
-                        {doctor.position}
-                      </p>
-                      <p className="text-sm text-slate-500">
-                        {doctor.specialty}
-                      </p>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="flex justify-center items-center gap-4 mb-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-600">
-                          {doctor.patients}
-                        </span>
-                      </div>
-                      <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                      <div className="flex items-center gap-1">
-                        <Award className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-600">
-                          {doctor.achievements.length} Awards
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Description - shows on hover */}
-                    <div
-                      className={`transition-all duration-300 overflow-hidden ${
-                        hoveredCard === doctor.id
-                          ? "max-h-20 opacity-100"
-                          : "max-h-0 opacity-0"
-                      }`}
-                    >
-                      <p className="text-sm text-slate-600 text-center leading-relaxed">
-                        {doctor.description}
-                      </p>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="mt-4 text-center">
-                      <button className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded-full font-medium hover:from-teal-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        View Profile
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Call to Action */}
           <div className="text-center mt-16">
