@@ -5,24 +5,26 @@ import Register from "./pages/Register";
 import PatientDash from "./pages/patient/Panel";
 import DoctorDashboard from "./pages/doctor/Panel";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
-import DoctorsList from "./pages/doctor/Doctorslist";
+import DoctorsList from "./pages/doctor/DoctorsList";
 import AppointmentBooking from "./pages/AppointmentBooking";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { store } from "./store";
+import { Provider } from "react-redux";
 function App() {
   return (
-      <div className="">
+    <div className="">
+      <Provider store={store}>
+        <ToastContainer 
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
         <Routes>
-          <ToastContainer 
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={true}
-            closeOnClick
-            pauseOnHover
-            draggable
-          />
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
@@ -32,7 +34,8 @@ function App() {
           <Route path="doctor-dashboard" element={<DoctorDashboard />} />
           <Route path="book" element={<AppointmentBooking />} />
         </Routes>
-      </div>
+      </Provider>
+    </div>
 
   );
 }
