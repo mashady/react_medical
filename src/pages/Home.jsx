@@ -89,6 +89,12 @@ export default function MedicalClinicWebsite() {
 
     fetchDoctors();
   }, []);
+  const handleViewProfile = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Navigating to doctor:", doctor.id);
+    navigate(`/doctor/${doctor.id}`);
+  };
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -884,21 +890,16 @@ export default function MedicalClinicWebsite() {
 
                       {/* Action Button */}
                       <div className="mt-4 text-center">
-                        <button className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-6 py-2 rounded-full font-medium hover:from-teal-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <button
+                          onClick={handleViewProfile}
+                          className="bg-[#00292e] hover:bg-[#07332f] text-[#ffb492] px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer"
+                          style={{
+                            zIndex: 100,
+                            position: "relative",
+                            pointerEvents: "auto",
+                          }}
+                        >
                           View Profile
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
                         </button>
                       </div>
                     </div>

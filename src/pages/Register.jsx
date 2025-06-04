@@ -1,435 +1,424 @@
-import React, { useState, useEffect } from "react";
-import {
-  User,
-  Mail,
-  Phone,
-  Lock,
-  Eye,
-  EyeOff,
-  Calendar,
-  MapPin,
-  Heart,
-  Sparkles,
-  ArrowRight,
-  Shield,
-} from "lucide-react";
-import login from "../assets/login.jpg"; // You can change this to a different image if needed
-
-// Move FormField OUTSIDE of Register component
-const FormField = ({
-  label,
-  name,
-  type,
-  placeholder,
-  icon: Icon,
-  hasToggle = false,
-  className = "",
-  formData,
-  handleChange,
-  focusedField,
-  setFocusedField,
-  showPassword,
-  showConfirmPassword,
-  setShowPassword,
-  setShowConfirmPassword,
-}) => (
-  <div className={`relative group ${className}`}>
-    <label
-      htmlFor={name}
-      className={`block text-xs mb-2 font-medium transition-colors duration-300 ${
-        focusedField === name ? "text-emerald-400" : "text-gray-400"
-      }`}
-    >
-      {label}
-    </label>
-    <div className="relative">
-      <Icon
-        className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-300 ${
-          focusedField === name ? "text-emerald-400" : "text-gray-500"
-        }`}
-      />
-      <input
-        id={name}
-        name={name}
-        type={
-          hasToggle
-            ? name === "password"
-              ? showPassword
-                ? "text"
-                : "password"
-              : showConfirmPassword
-              ? "text"
-              : "password"
-            : type
-        }
-        value={formData[name]}
-        onChange={handleChange}
-        onFocus={() => setFocusedField(name)}
-        onBlur={() => setFocusedField("")}
-        className="w-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl py-2.5 pl-11 pr-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-all duration-300 hover:bg-gray-800/70 text-sm"
-        placeholder={placeholder}
-        style={hasToggle ? { paddingRight: "2.5rem" } : {}}
-      />
-      {hasToggle && (
-        <button
-          type="button"
-          onClick={() =>
-            name === "password"
-              ? setShowPassword((prev) => !prev)
-              : setShowConfirmPassword((prev) => !prev)
-          }
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-emerald-400 transition-colors duration-300"
-          aria-label={`${
-            name === "password"
-              ? showPassword
-                ? "Hide"
-                : "Show"
-              : showConfirmPassword
-              ? "Hide"
-              : "Show"
-          } password`}
-        >
-          {(name === "password" ? showPassword : showConfirmPassword) ? (
-            <EyeOff className="w-4 h-4" />
-          ) : (
-            <Eye className="w-4 h-4" />
-          )}
-        </button>
-      )}
-      <div
-        className={`absolute inset-0 rounded-xl transition-all duration-300 pointer-events-none ${
-          focusedField === name
-            ? "bg-gradient-to-r from-emerald-400/10 to-green-400/10"
-            : ""
-        }`}
-      ></div>
-    </div>
-  </div>
-);
+import React, { useState } from "react";
+import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    emailAddress: "",
-    phoneNumber: "",
+    first_name: "",
+    last_name: "",
+    username: "",
+    email: "",
+    phone_number: "",
+    role: "patient", 
     password: "",
-    confirmPassword: "",
-    dateOfBirth: "",
-    address: "",
+    confirm_password: ""
   });
 
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [focusedField, setFocusedField] = useState("");
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const handleSubmit = () => {
-    console.log("Registration form submitted:", formData);
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
+    if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
+    if (!formData.username.trim()) newErrors.username = 'Username is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const FloatingElements = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-20 left-10 w-2 h-2 bg-emerald-300 rounded-full opacity-60 animate-pulse"></div>
-      <div className="absolute top-40 right-16 w-1 h-1 bg-green-300 rounded-full opacity-80 animate-ping"></div>
-      <div className="absolute bottom-32 left-20 w-3 h-3 bg-teal-300 rounded-full opacity-40 animate-bounce"></div>
-      <div className="absolute top-60 left-1/3 w-1 h-1 bg-lime-300 rounded-full opacity-70 animate-pulse"></div>
-    </div>
-  );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      const payload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        username: formData.username,
+        email: formData.email,
+        role: formData.role,
+        password: formData.password,
+        phone_number: formData.phone_number
+      };
+
+      const response = await axios.post('/api/register/', payload);
+      
+      console.log('Registration successful:', response.data);
+      
+      localStorage.setItem('accessToken', response.data.access);
+      localStorage.setItem('userData', JSON.stringify(response.data));
+      
+      if (response.data.role === 'doctor') {
+        navigate('/doctor-dashboard');
+      } else if (response.data.role === 'patient') {
+        navigate('/patient-dashboard');
+      } else if (response.data.role === 'admin') {
+        navigate('/admin-dashboard');
+      }
+      
+      setRegistrationSuccess(true);
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+      
+      if (error.response?.data) {
+        setErrors(prev => ({
+          ...prev,
+          ...error.response.data
+        }));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (registrationSuccess) {
+    return (
+      <div className="min-h-screen flex" style={{ backgroundColor: '#07332f' }}>
+        <div className="flex-1 flex items-center justify-center p-8 relative">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Registration Successful!</h2>
+            <p className="text-teal-200 mb-8">You will be redirected shortly...</p>
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-300"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 flex relative overflow-hidden">
-      <FloatingElements />
-
-      {/* Animated background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(255,255,255,0.1) 2px, transparent 0)`,
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>
-
-      {/* Left Side - Form */}
-      <div
-        className={`flex-1 flex items-center justify-center p-6 relative z-10 transition-all duration-1000 ${
-          isLoaded ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"
-        }`}
-      >
-        <div className="w-full max-w-lg">
-          {/* Logo with enhanced styling */}
-          <div
-            className={`flex items-center mb-6 transition-all duration-700 delay-200 ${
-              isLoaded
-                ? "translate-y-0 opacity-100"
-                : "-translate-y-5 opacity-0"
-            }`}
-          >
-            <div className="relative">
-              <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl mr-3 flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
-                <Heart className="w-4 h-4 text-white animate-pulse" />
-              </div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
-            </div>
-            <span className="text-white text-xl font-bold tracking-wide">
-              CarePulse
-            </span>
-          </div>
-
-          {/* Header with enhanced typography */}
-          <div
-            className={`mb-6 transition-all duration-700 delay-300 ${
-              isLoaded ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"
-            }`}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-white text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Join CarePulse
-              </h1>
-              <Sparkles
-                className="w-5 h-5 text-yellow-400 animate-spin"
-                style={{ animationDuration: "3s" }}
-              />
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Create your account and start your healthcare journey with us.
-            </p>
-          </div>
-
-          {/* Enhanced Form */}
-          <div
-            className={`transition-all duration-700 delay-500 ${
-              isLoaded
-                ? "translate-y-0 opacity-100"
-                : "translate-y-10 opacity-0"
-            }`}
-          >
-            {/* Two-column grid for compact layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <FormField
-                label="Full name"
-                name="fullName"
-                type="text"
-                placeholder="Enter your full name"
-                icon={User}
-                formData={formData}
-                handleChange={handleChange}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                showPassword={showPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowPassword={setShowPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-              />
-
-              <FormField
-                label="Email address"
-                name="emailAddress"
-                type="email"
-                placeholder="Enter your email address"
-                icon={Mail}
-                formData={formData}
-                handleChange={handleChange}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                showPassword={showPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowPassword={setShowPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-              />
-
-              <FormField
-                label="Phone number"
-                name="phoneNumber"
-                type="tel"
-                placeholder="Enter your phone number"
-                icon={Phone}
-                formData={formData}
-                handleChange={handleChange}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                showPassword={showPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowPassword={setShowPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-              />
-
-              <FormField
-                label="Date of birth"
-                name="dateOfBirth"
-                type="date"
-                placeholder=""
-                icon={Calendar}
-                formData={formData}
-                handleChange={handleChange}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                showPassword={showPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowPassword={setShowPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-              />
-            </div>
-
-            {/* Full-width fields */}
-            <div className="space-y-4 mb-4">
-              <FormField
-                label="Address"
-                name="address"
-                type="text"
-                placeholder="Enter your address"
-                icon={MapPin}
-                formData={formData}
-                handleChange={handleChange}
-                focusedField={focusedField}
-                setFocusedField={setFocusedField}
-                showPassword={showPassword}
-                showConfirmPassword={showConfirmPassword}
-                setShowPassword={setShowPassword}
-                setShowConfirmPassword={setShowConfirmPassword}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  placeholder="Create a password"
-                  icon={Lock}
-                  hasToggle={true}
-                  formData={formData}
-                  handleChange={handleChange}
-                  focusedField={focusedField}
-                  setFocusedField={setFocusedField}
-                  showPassword={showPassword}
-                  showConfirmPassword={showConfirmPassword}
-                  setShowPassword={setShowPassword}
-                  setShowConfirmPassword={setShowConfirmPassword}
-                />
-
-                <FormField
-                  label="Confirm password"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your password"
-                  icon={Lock}
-                  hasToggle={true}
-                  formData={formData}
-                  handleChange={handleChange}
-                  focusedField={focusedField}
-                  setFocusedField={setFocusedField}
-                  showPassword={showPassword}
-                  showConfirmPassword={showConfirmPassword}
-                  setShowPassword={setShowPassword}
-                  setShowConfirmPassword={setShowConfirmPassword}
-                />
-              </div>
-            </div>
-
-            {/* Enhanced Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="group w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-gray-900 shadow-lg hover:shadow-xl transform hover:scale-[1.02] relative overflow-hidden mb-4"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              <div className="flex items-center justify-center gap-2 relative z-10">
-                <span>Create Account</span>
-                <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
-              </div>
-            </button>
-
-            {/* Login Link */}
-            <p className="text-center text-gray-400 text-sm">
-              Already have an account?{" "}
-              <button className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors duration-300 hover:underline">
-                Sign In
-              </button>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Image */}
-      <div
-        className={`flex-1 flex items-center justify-center relative transition-all duration-1000 delay-300 ${
-          isLoaded ? "translate-x-0 opacity-100" : "translate-x-10 opacity-0"
-        }`}
-      >
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 via-green-500/20 to-teal-500/20"></div>
-
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
+    <div className="min-h-screen flex">
+      <div className="flex-1 relative overflow-hidden">
+        <div className="w-full h-full">
+          <img 
+            src="https://demo.awaikenthemes.com/theme-medipro/wp-content/uploads/2024/05/improving-img.jpg" 
+            alt="Healthcare Team" 
+            className="w-full h-full object-cover"
             style={{
-              backgroundImage: `radial-gradient(circle at 30px 30px, rgba(52,211,153,0.3) 2px, transparent 0)`,
-              backgroundSize: "60px 60px",
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
             }}
-          ></div>
+          />
         </div>
+      </div>
 
-        {/* Floating accent elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-16 right-20 w-4 h-4 bg-emerald-400/60 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-20 left-16 w-2 h-2 bg-green-400/40 rounded-full animate-ping"></div>
-          <div className="absolute top-1/3 right-32 w-1 h-1 bg-teal-400/80 rounded-full animate-pulse delay-1000"></div>
+      <div className="flex-1 flex items-center justify-center p-8 relative" style={{ backgroundColor: '#07332f' }}>
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-white rounded-full"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 border border-white rounded-full"></div>
+          <div className="absolute bottom-32 left-40 w-16 h-16 border border-white rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 border border-white rounded-full"></div>
         </div>
-
-        {/* Image Container */}
-        <div className="relative z-10 flex flex-col items-center">
-          {/* Image with enhanced styling */}
-          <div className="relative mb-8">
-            {/* Decorative background circles */}
-            <div className="absolute inset-0 w-80 h-80 rounded-full blur-3xl opacity-20 transform scale-110 bg-gradient-to-br from-emerald-400 to-green-500"></div>
-
-            {/* Main image */}
-            <div className="relative w-80 h-80 rounded-full overflow-hidden shadow-2xl ring-4 ring-emerald-400/20">
-              <img
-                src={login}
-                alt="Healthcare professional"
-                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-              />
-
-              {/* Overlay gradient for better visual appeal */}
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/20 via-transparent to-transparent"></div>
+        
+        <div className="w-full max-w-md relative z-10">
+          <div className="flex items-center mb-12">
+            <div className="w-10 h-10 rounded-lg mr-3 flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #F7A582, #f09663)' }}>
+              <div className="w-5 h-5 bg-white rounded-sm"></div>
             </div>
-
-            {/* Floating medical icons around the image */}
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center animate-bounce shadow-lg">
-              <Heart className="w-4 h-4 text-white" />
-            </div>
-            <div className="absolute top-8 -right-8 w-6 h-6 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse delay-500 shadow-lg">
-              <div className="w-3 h-0.5 bg-white"></div>
-              <div className="absolute w-0.5 h-3 bg-white"></div>
-            </div>
-            <div className="absolute -bottom-2 -right-6 w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-bounce delay-1000 shadow-lg">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <div className="absolute bottom-12 -left-8 w-7 h-7 bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center animate-pulse delay-700 shadow-lg">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
+            <span className="text-white text-2xl font-bold">MediPro</span>
           </div>
 
-          {/* Text Content */}
-          <div className="text-center">
-            <h2 className="text-white text-2xl font-bold mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Secure & Trusted
-            </h2>
-            <p className="text-gray-400 text-base leading-relaxed max-w-sm mx-auto">
-              Your personal health information is protected with
-              enterprise-grade security measures.
+          <div className="mb-8">
+            <h1 className="text-white text-4xl font-light mb-3">
+              Join Our 
+              <span className="block font-semibold" style={{ color: '#F7A582' }}>Healthcare Family</span>
+            </h1>
+            <p className="text-teal-200 text-base leading-relaxed">
+              Create your account and start experiencing premium healthcare services today.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="first_name"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                First name
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="first_name"
+                  name="first_name"
+                  type="text"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-4 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.first_name ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Enter your first name"
+                />
+              </div>
+              {errors.first_name && <p className="mt-1 text-sm text-red-500">{errors.first_name}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="last_name"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Last name
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="last_name"
+                  name="last_name"
+                  type="text"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-4 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.last_name ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Enter your last name"
+                />
+              </div>
+              {errors.last_name && <p className="mt-1 text-sm text-red-500">{errors.last_name}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Username
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-4 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.username ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Choose a username"
+                />
+              </div>
+              {errors.username && <p className="mt-1 text-sm text-red-500">{errors.username}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-4 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.email ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Enter your email address"
+                />
+              </div>
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="phone_number"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Phone number (optional)
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="phone_number"
+                  name="phone_number"
+                  type="tel"
+                  value={formData.phone_number}
+                  onChange={handleChange}
+                  className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl py-4 pl-12 pr-4 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300"
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              {errors.phone_number && <p className="mt-1 text-sm text-red-500">{errors.phone_number}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="role"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Role
+              </label>
+              <div className="relative">
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl py-4 pl-4 pr-10 text-white focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 appearance-none"
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                >
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-teal-400">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-12 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.password ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-400"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirm_password"
+                className="block text-teal-200 text-sm font-medium mb-2"
+              >
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400" />
+                <input
+                  id="confirm_password"
+                  name="confirm_password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                  className={`w-full bg-white/10 backdrop-blur-sm border rounded-xl py-4 pl-12 pr-12 text-white placeholder-teal-300 focus:outline-none focus:ring-2 focus:border-opacity-100 transition-all duration-300 ${
+                    errors.confirm_password ? 'border-red-500' : 'border-white/20'
+                  }`}
+                  style={{ 
+                    '--tw-ring-color': '#F7A582',
+                  }}
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-teal-400"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {errors.confirm_password && <p className="mt-1 text-sm text-red-500">{errors.confirm_password}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              style={{ 
+                background: 'linear-gradient(135deg, #F7A582, #f09663)',
+                '--tw-ring-color': '#F7A582',
+                '--tw-ring-offset-color': '#07332f'
+              }}
+              onMouseEnter={(e) => !isSubmitting && (e.target.style.background = 'linear-gradient(135deg, #f09663, #eb8a4f)')}
+              onMouseLeave={(e) => !isSubmitting && (e.target.style.background = 'linear-gradient(135deg, #F7A582, #f09663)')}
+            >
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-teal-300 text-sm">
+              Already have an account? <span className="cursor-pointer underline" style={{ color: '#F7A582' }}>Sign in here</span>
+            </p>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-teal-400 text-xs text-center">
+              © 2024 MediPro Healthcare - All rights reserved
             </p>
           </div>
         </div>

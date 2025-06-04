@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Link, useNavigate } from "react-router-dom"; 
-{
+import { Link, useNavigate } from "react-router-dom";
+import {
   Phone,
   Stethoscope,
   Search,
@@ -12,10 +12,10 @@ import { Link, useNavigate } from "react-router-dom";
   Facebook,
   ChevronLeft,
   ChevronRight,
-  Filter,}
- from "lucide-react";
+  Filter,
+} from "lucide-react";
 import Header from "../../components/Header";
-
+import MedicalFooter from "../../components/footer.jsx";
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
