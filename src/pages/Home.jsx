@@ -31,6 +31,7 @@ import {
   TestTube,
   HeartHandshake,
 } from "lucide-react";
+import Header from "../components/Header.jsx";
 
 export default function MedicalClinicWebsite() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -66,9 +67,9 @@ export default function MedicalClinicWebsite() {
             ? doctor.specialty.description
             : "General Medicine",
           experience: "10+ years",
-          rating: 4.8, 
-          patients: "1,500+", 
-          image: doctor, 
+          rating: 4.8,
+          patients: "1,500+",
+          image: doctor,
           achievements: doctor.specialty
             ? [doctor.specialty.name]
             : ["General Practice"],
@@ -89,15 +90,6 @@ export default function MedicalClinicWebsite() {
     fetchDoctors();
   }, []);
 
-  const getGradientClasses = (color) => {
-    const gradients = {
-      blue: "from-blue-400 via-blue-500 to-blue-600",
-      green: "from-emerald-400 via-emerald-500 to-emerald-600",
-      purple: "from-purple-400 via-purple-500 to-purple-600",
-      teal: "from-teal-400 via-teal-500 to-teal-600",
-    };
-    return gradients[color] || gradients.blue;
-  };
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
@@ -380,64 +372,7 @@ export default function MedicalClinicWebsite() {
         }}
       />
 
-      <header className="bg-[#07332f] text-white py-4 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="">
-              <img src={logo} />
-            </div>
-          </div>
-          <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Home
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              About Us
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Services
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Pages
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Contact Us
-            </a>
-            <button
-              className="text-[#F7A582] hover:bg-[#3f2e27] px-4 py-2 rounded-full text-sm font-medium transition-colors"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Book Appointment
-            </button>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section

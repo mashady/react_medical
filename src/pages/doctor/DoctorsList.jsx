@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
+import { Link, useNavigate } from "react-router-dom"; 
+{
   Phone,
   Stethoscope,
   Search,
@@ -11,8 +12,9 @@ import {
   Facebook,
   ChevronLeft,
   ChevronRight,
-  Filter,
-} from "lucide-react";
+  Filter,}
+ from "lucide-react";
+import Header from "../../components/Header";
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -30,9 +32,9 @@ const logo = "https://via.placeholder.com/120x40/07332f/ffffff?text=LOGO";
 
 const DoctorCard = ({ doctor }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate(); // Added useNavigate hook
 
   const renderStars = (rating) => {
-    
     rating = rating || 4.5;
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -62,10 +64,17 @@ const DoctorCard = ({ doctor }) => {
     return stars;
   };
 
- 
   const doctorImage =
     doctor.image ||
     "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg";
+
+  // Handle navigation
+  const handleViewProfile = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Navigating to doctor:", doctor.id);
+    navigate(`/doctor/${doctor.id}`);
+  };
 
   return (
     <div
@@ -93,6 +102,7 @@ const DoctorCard = ({ doctor }) => {
                 key={index}
                 className="w-10 h-10 bg-[#ffb492] rounded-full flex items-center justify-center text-[#00292e] hover:bg-[#07332f] hover:text-[#ffb492] transition-colors duration-200 transform hover:scale-110"
                 aria-label="Social Media"
+                style={{ zIndex: 10, position: "relative" }}
               >
                 <Icon size={18} />
               </button>
@@ -140,7 +150,16 @@ const DoctorCard = ({ doctor }) => {
             </span>
           </div>
 
-          <button className="bg-[#00292e] hover:bg-[#07332f] text-[#ffb492] px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+          {/* FIXED BUTTON */}
+          <button
+            onClick={handleViewProfile}
+            className="bg-[#00292e] hover:bg-[#07332f] text-[#ffb492] px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer"
+            style={{
+              zIndex: 100,
+              position: "relative",
+              pointerEvents: "auto",
+            }}
+          >
             View Profile
           </button>
         </div>
@@ -183,10 +202,8 @@ const DoctorsList = () => {
         }
         const data = await response.json();
 
-       
         const transformedDoctors = data.map((doctor) => ({
           ...doctor,
-          
           rating: doctor.rating || 4.5,
           experience: doctor.experience || 5,
           image:
@@ -237,27 +254,31 @@ const DoctorsList = () => {
     });
 
     setFilteredDoctors(filtered);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   }, [searchQuery, doctors, selectedSpecialty, experienceFilter, ratingFilter]);
 
-  // Custom cursor functionality
+  // Custom cursor functionality - FIXED to not interfere with clicks
   useEffect(() => {
     const handleMouseMove = (e) => {
       setCursorPos({ x: e.clientX, y: e.clientY });
 
-      gsap.to(cursorRef.current, {
-        x: e.clientX - 20,
-        y: e.clientY - 20,
-        duration: 0.1,
-        ease: "power2.out",
-      });
+      if (cursorRef.current) {
+        gsap.to(cursorRef.current, {
+          x: e.clientX - 20,
+          y: e.clientY - 20,
+          duration: 0.1,
+          ease: "power2.out",
+        });
+      }
 
-      gsap.to(cursorDotRef.current, {
-        x: e.clientX - 3,
-        y: e.clientY - 3,
-        duration: 0.05,
-        ease: "power2.out",
-      });
+      if (cursorDotRef.current) {
+        gsap.to(cursorDotRef.current, {
+          x: e.clientX - 3,
+          y: e.clientY - 3,
+          duration: 0.05,
+          ease: "power2.out",
+        });
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -278,38 +299,44 @@ const DoctorsList = () => {
       });
 
       // Parallax effect for hero background
-      gsap.to(heroRef.current, {
-        yPercent: -50,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
+      if (heroRef.current) {
+        gsap.to(heroRef.current, {
+          yPercent: -50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
-  // Cursor hover effects
+  // Cursor hover effects - FIXED
   const handleHoverEnter = () => {
     setIsHovering(true);
-    gsap.to(cursorRef.current, {
-      scale: 2,
-      duration: 0.3,
-      ease: "power2.out",
-    });
+    if (cursorRef.current) {
+      gsap.to(cursorRef.current, {
+        scale: 2,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
   };
 
   const handleHoverLeave = () => {
     setIsHovering(false);
-    gsap.to(cursorRef.current, {
-      scale: 1,
-      duration: 0.3,
-      ease: "power2.out",
-    });
+    if (cursorRef.current) {
+      gsap.to(cursorRef.current, {
+        scale: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
   };
 
   // Get unique specialties
@@ -364,79 +391,24 @@ const DoctorsList = () => {
       ref={containerRef}
       className="bg-[#fff8f4] min-h-screen text-[#00292e] relative"
     >
-      {/* Custom Cursor */}
+      {/* Custom Cursor - FIXED with proper pointer-events */}
       <div
         ref={cursorRef}
         className={`fixed top-0 left-0 w-6 h-6 bg-[#f7a582] rounded-full pointer-events-none z-50 transition-all duration-200 ease-out ${
           isHovering ? "scale-150 bg-teal-600" : "scale-100"
         }`}
+        style={{ pointerEvents: "none" }} // Ensure cursor doesn't block clicks
       />
       <div
         ref={cursorDotRef}
         className="fixed top-0 left-0 w-12 h-12 border-2 border-[#f7a582] rounded-full pointer-events-none z-40 transition-all duration-300 ease-out"
         style={{
           transform: `scale(${isHovering ? 1.5 : 1})`,
+          pointerEvents: "none", // Ensure cursor doesn't block clicks
         }}
       />
 
-      <header className="bg-[#07332f] text-white py-4 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="">
-              <img src={logo} alt="Logo" />
-            </div>
-          </div>
-          <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Home
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              About Us
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Services
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Pages
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Contact Us
-            </a>
-            <button
-              className="text-[#F7A582] hover:bg-[#3f2e27] px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Book Appointment
-            </button>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <section
         ref={heroRef}

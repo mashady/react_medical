@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import axios from "axios";
-
+import Header from "../../components/Header";
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,14 +19,12 @@ const MedicalFooter = () => (
 const logo = "https://via.placeholder.com/120x40/07332f/ffffff?text=LOGO";
 
 export default function DoctorProfile() {
-
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-
 
   const containerRef = useRef();
   const heroRef = useRef();
@@ -37,16 +35,14 @@ export default function DoctorProfile() {
   const awardsRef = useRef();
   const skillsRef = useRef();
 
- 
   useEffect(() => {
     const fetchDoctorData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/doctor/profile/${id}`
+          `http://127.0.0.1:8000/api/doctors/${id}`
         );
 
-  
         const doctorData = {
           name: `Dr. ${response.data.user.first_name} ${response.data.user.last_name}`,
           specialty: response.data.specialty.name,
@@ -297,64 +293,7 @@ export default function DoctorProfile() {
         }}
       />
 
-      <header className="bg-[#07332f] text-white py-4 px-6 relative z-10 ">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="">
-              <img src={logo} alt="Logo" />
-            </div>
-          </div>
-          <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Home
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              About Us
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Services
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Pages
-            </a>
-            <a
-              href="#"
-              className="hover:text-[#F7A582] transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Contact Us
-            </a>
-            <button
-              className="text-[#F7A582] hover:bg-[#3f2e27] px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              Book Appointment
-            </button>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <section
         ref={heroRef}
@@ -473,96 +412,6 @@ export default function DoctorProfile() {
         </div>
       </div>
 
-      {/* Services */}
-      <div ref={servicesRef} className="max-w-6xl mx-auto px-4 mt-16">
-        <h4 className="text-sm text-[#ffb492] uppercase font-semibold tracking-wider">
-          Services
-        </h4>
-        <h2 className="text-2xl font-bold mb-8">My Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {doctor.services.map((service, index) => (
-            <div
-              key={index}
-              className="service-card bg-white p-4 rounded-lg shadow-sm border-l-4 border-[#ffb492] hover:shadow-md transition-shadow cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              <p className="text-gray-700 font-medium">{service}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Education */}
-      <div ref={educationRef} className="max-w-6xl mx-auto px-4 mt-16">
-        <h4 className="text-sm text-[#ffb492] uppercase font-semibold tracking-wider">
-          Education
-        </h4>
-        <h2 className="text-2xl font-bold mb-8">Education & Training</h2>
-        <div className="space-y-4">
-          {doctor.education.map((edu, index) => (
-            <div
-              key={index}
-              className="education-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-[#00292e]"
-            >
-              <p className="text-lg font-bold text-[#00292e]">{edu.degree}</p>
-              <p className="text-gray-600">{edu.institution}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Awards */}
-      <div ref={awardsRef} className="max-w-6xl mx-auto px-4 mt-16">
-        <h4 className="text-sm text-[#ffb492] uppercase font-semibold tracking-wider">
-          Awards
-        </h4>
-        <h2 className="text-2xl font-bold mb-8">My Awards</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {doctor.awards.map((award, index) => (
-            <div
-              key={index}
-              className="award-card bg-white p-6 rounded-lg shadow-sm text-center hover:shadow-md transition-shadow cursor-none"
-              onMouseEnter={handleHoverEnter}
-              onMouseLeave={handleHoverLeave}
-            >
-              <div className="w-16 h-16 bg-[#ffb492] rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-trophy text-white text-2xl"></i>
-              </div>
-              <p className="text-gray-700 font-medium">{award}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Skills */}
-      <div ref={skillsRef} className="max-w-6xl mx-auto px-4 mt-16 mb-16">
-        <h4 className="text-sm text-[#ffb492] uppercase font-semibold tracking-wider">
-          Skills
-        </h4>
-        <h2 className="text-2xl font-bold mb-8">My Skills</h2>
-        <div className="space-y-6">
-          {doctor.skills.map((skill, index) => (
-            <div
-              key={index}
-              className="skill-card bg-white p-6 rounded-lg shadow-sm"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <p className="font-medium text-gray-800">{skill.name}</p>
-                <span className="text-sm font-bold text-[#00292e]">
-                  {skill.percentage}%
-                </span>
-              </div>
-              <div className="bg-gray-200 h-3 rounded-full overflow-hidden">
-                <div
-                  className="skill-bar bg-gradient-to-r from-[#00292e] to-[#ffb492] h-full rounded-full"
-                  style={{ width: `${skill.percentage}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
       <MedicalFooter />
     </div>
   );
