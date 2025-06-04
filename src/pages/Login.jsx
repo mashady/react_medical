@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUserData, setProfileData, setLoading, setError } from '../features/auth/userSlice';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ const Login = () => {
   const [loginSuccess, setLoginSuccess] = useState(false);
   
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,12 +45,36 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const fetchProfileData = async (userId, role) => {
+    try {
+      let profileUrl = '';
+      if (role === 'doctor') {
+        profileUrl = `http://localhost:8000/api/doctor/profile/${userId}/`;
+      } else if (role === 'patient') {
+        profileUrl = `http://localhost:8000/api/patients/by-user/${userId}/`;
+      }
+
+      if (profileUrl) {
+        const response = await axios.get(profileUrl, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        dispatch(setProfileData(response.data));
+      }
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+      // You can choose to handle this error or ignore it if profile is not critical
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) return;
     
     setIsSubmitting(true);
+    dispatch(setLoading(true));
     
     try {
       const response = await axios.post('/api/login/', {
@@ -57,9 +84,17 @@ const Login = () => {
       
       console.log('Login successful:', response.data);
       
+      // Save tokens and user data
       localStorage.setItem('accessToken', response.data.access);
-      localStorage.setItem('userData', JSON.stringify(response.data.user));
+      localStorage.setItem('refreshToken', response.data.refresh);
       
+      // Dispatch user data to Redux store
+      dispatch(setUserData(response.data.user));
+      
+      // Fetch and store profile data based on user role
+      await fetchProfileData(response.data.user.id, response.data.user.role);
+      
+      // Redirect based on role
       if (response.data.user.role === 'doctor') {
         navigate('/doctor-dashboard');
       } else if (response.data.user.role === 'patient') {
@@ -71,6 +106,7 @@ const Login = () => {
       setLoginSuccess(true);
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);
+      dispatch(setError(error.response?.data?.detail || 'Login failed'));
       
       if (error.response?.data) {
         if (error.response.data.detail) {
@@ -86,6 +122,7 @@ const Login = () => {
       }
     } finally {
       setIsSubmitting(false);
+      dispatch(setLoading(false));
     }
   };
 
