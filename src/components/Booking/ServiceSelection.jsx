@@ -15,8 +15,9 @@ export default function ServiceSelection({ formData, setFormData, nextStep }) {
   const [isAllSelected, setAIsAllSelected] = useState(true);
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('accessToken');
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5MDgwMzk5LCJpYXQiOjE3NDkwNDQzOTksImp0aSI6IjQ4ZWNkZTIxYmVhNDQ4ODNhZDI4NDRiMWI3ZDUzYzJmIiwidXNlcl9pZCI6MTV9.IW60UO_zFQ9ySPN_HPXKt22f1rXqWfx60Dm2iK4hvS0';
+  // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5MDgwMzk5LCJpYXQiOjE3NDkwNDQzOTksImp0aSI6IjQ4ZWNkZTIxYmVhNDQ4ODNhZDI4NDRiMWI3ZDUzYzJmIiwidXNlcl9pZCI6MTV9.IW60UO_zFQ9ySPN_HPXKt22f1rXqWfx60Dm2iK4hvS0';
   // This is running onComponentLoad =>
   useEffect(() => {
     axios.get(`/api/specialties/`,{

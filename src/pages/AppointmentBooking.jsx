@@ -14,6 +14,8 @@ import DateTimePicker from '../components/Booking/DateTimePicker';
 import PatientDetails from '../components/Booking/PatientDetails';
 import Summary from '../components/Booking/Summary';
 import axios from 'axios';
+import MedicalFooter from '../components/footer';
+import Header from '../components/Header';
 
 export default function AppointmentBooking() {
   const navigate = useNavigate(); 
@@ -32,7 +34,7 @@ export default function AppointmentBooking() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5MDgwMzk5LCJpYXQiOjE3NDkwNDQzOTksImp0aSI6IjQ4ZWNkZTIxYmVhNDQ4ODNhZDI4NDRiMWI3ZDUzYzJmIiwidXNlcl9pZCI6MTV9.IW60UO_zFQ9ySPN_HPXKt22f1rXqWfx60Dm2iK4hvS0';
+  const token = localStorage.getItem('accessToken');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,8 +137,11 @@ export default function AppointmentBooking() {
   };
 
   return (
+    <>
+    <Header />
     <div className="min-h-screen bg-gray-50">
       {/* Enhanced Header */}
+
       <div className="bg-[#07332F] text-white" style={{ minHeight: '30vh' }}>
         <div className="max-w-6xl mx-auto p-8 flex flex-col justify-end h-full">
           <div className="flex items-center text-sm mb-4">
@@ -209,6 +214,9 @@ export default function AppointmentBooking() {
           )}
         </div>
       </div>
+      <MedicalFooter />
     </div>
+    </>
+    
   );
 }
